@@ -1,6 +1,6 @@
-head: {
-    defaults: {
-        title: 'default title',
-        useSocialMetaTags: true
-    }
+head : {
+	defaults: {
+		title: 'Строительная компания "Теплый дом"',
+		useSocialMetaTags: true
+	}
 }
