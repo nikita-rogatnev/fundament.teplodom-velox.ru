@@ -6,7 +6,7 @@
 ## Summary
 * High Resolution: Yes
 * Compatible Browsers: IE10+, Edge, Firefox, Safari, Opera, Chrome
-* Technologies: BEM, Tars, HTML5
+* Technologies: BEM, Tars (SASS, Gulp, Handlebars), HTML5
 * Files Included: HTML Files, SCSS Files, CSS Files, JS Files, Images
 * Layout: Responsive
 
