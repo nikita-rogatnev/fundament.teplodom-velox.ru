@@ -1,9 +1,10 @@
-# fundament.teplodom-velox.ru [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url] [![devDependency status][dev-dependency-image]][dev-dependency-url]
+# fundament.teplodom-velox.ru
+[![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url] [![devDependency status][dev-dependency-image]][dev-dependency-url]
 
 ## Summary
 * High Resolution: Yes
 * Compatible Browsers: IE10+, Edge, Firefox, Safari, Opera, Chrome
-* Technologies: BEM, SASS, WebPack, Gulp, HTML5
+* Technologies: BEM, Tars, HTML5
 * Files Included: HTML Files, SCSS Files, CSS Files, JS Files, Images
 * Layout: Responsive
 
