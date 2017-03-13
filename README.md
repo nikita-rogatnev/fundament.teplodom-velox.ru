@@ -1,4 +1,6 @@
 # fundament.teplodom-velox.ru
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/rogatnev-nikita/fundament.teplodom-velox.ru.svg)](https://greenkeeper.io/)
 [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url] [![devDependency status][dev-dependency-image]][dev-dependency-url]
 
 ## Summary
