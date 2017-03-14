@@ -36,3 +36,8 @@ module.exports = () => {
             runSequence('html:concat-mocks-data', 'html:compile-templates', () => {});
         });
 };
+}
+
+runSequence('html:concat-mocks-data', 'html:compile-templates', () => {});
+});
+};
