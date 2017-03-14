@@ -21,14 +21,17 @@ let paths = [
     `${imagesFolderPath}/sprite`
 ];
 
-tars
-    .config
-    .useImagesForDisplayWithDpi
-    .forEach(dpiValue => {
-        paths.push(`${imagesFolderPath}/sprite/${dpiValue}dpi`);
-    });
+tars.config.useImagesForDisplayWithDpi.forEach(dpiValue => {
+    paths.push(`${imagesFolderPath}/sprite/${dpiValue}dpi`);
+});
 
-paths.push(`${imagesFolderPath}/svg`, `${staticFolderPath}/fonts`, `${staticFolderPath}/${tars.config.cssPreprocessor}`, `${componentsFolderPath}/_template/assets`, `${componentsFolderPath}/_template/ie`);
+paths.push(
+    `${imagesFolderPath}/svg`,
+    `${staticFolderPath}/fonts`,
+    `${staticFolderPath}/${tars.config.cssPreprocessor}`,
+    `${componentsFolderPath}/_template/assets`,
+    `${componentsFolderPath}/_template/ie`
+);
 
 /**
  * Create fs for project

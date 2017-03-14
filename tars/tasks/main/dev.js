@@ -18,11 +18,7 @@ module.exports = () => {
      */
     function devTaskFinallyActions() {
         // require system and user's watchers
-        tars
-            .helpers
-            .tarsFsHelper
-            .getWatchers()
-            .forEach(file => require(file)());
+        tars.helpers.tarsFsHelper.getWatchers().forEach(file => require(file)());
 
         if (tars.config.notifyConfig.useNotify && env.NODE_ENV !== 'production' && !env.DISABLE_NOTIFIER) {
             notify({
@@ -42,14 +38,17 @@ module.exports = () => {
             let browserSyncConfig = tars.pluginsConfig.browserSync;
 
             /* eslint-disable no-undefined */
-            browserSyncConfig = Object.assign(browserSyncConfig, {
-                middleware: browserSyncConfig.middleware || [],
-                port: env.BROWSERSYNC_PORT || browserSyncConfig.port,
-                logConnections: browserSyncConfig.logConnections || true,
-                logLevel: browserSyncConfig.logLevel || 'info',
-                reloadOnRestart: browserSyncConfig.reloadOnRestart || true,
-                tunnel: tars.flags.tunnel
-            });
+            browserSyncConfig = Object.assign(
+                browserSyncConfig,
+                {
+                    middleware: browserSyncConfig.middleware || [],
+                    port: env.BROWSERSYNC_PORT || browserSyncConfig.port,
+                    logConnections: browserSyncConfig.logConnections || true,
+                    logLevel: browserSyncConfig.logLevel || 'info',
+                    reloadOnRestart: browserSyncConfig.reloadOnRestart || true,
+                    tunnel: tars.flags.tunnel
+                }
+            );
             /* eslint-enable no-undefined */
 
             if (!useHMR) {
@@ -58,19 +57,21 @@ module.exports = () => {
             } else {
                 const webpackConfig = require(`${cwd}/webpack.config`);
                 const webpackInstance = tars.require('webpack')(webpackConfig);
-                const webpackDevMiddlewareInstance = tars.require('webpack-dev-middleware')(webpackInstance, {
-                    publicPath: `/${tars.config.fs.staticFolderName}/js/`,
-                    stats: {
-                        colors: true
+                const webpackDevMiddlewareInstance = tars.require('webpack-dev-middleware')(
+                    webpackInstance,
+                    {
+                        publicPath: `/${tars.config.fs.staticFolderName}/js/`,
+                        stats: {
+                            colors: true
+                        }
                     }
-                });
+                );
                 const browserSyncMiddleware = [
-                    webpackDevMiddlewareInstance, tars.require('webpack-hot-middleware')(webpackInstance)
+                    webpackDevMiddlewareInstance,
+                    tars.require('webpack-hot-middleware')(webpackInstance)
                 ];
 
-                browserSyncConfig.middleware = browserSyncConfig
-                    .middleware
-                    .concat(browserSyncMiddleware);
+                browserSyncConfig.middleware = browserSyncConfig.middleware.concat(browserSyncMiddleware);
                 tars.say('Wait for a moment, please. Webpack is preparing bundle for you...');
 
                 webpackDevMiddlewareInstance.waitUntilValid(() => {

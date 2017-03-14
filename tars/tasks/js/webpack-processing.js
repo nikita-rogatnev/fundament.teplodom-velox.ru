@@ -13,17 +13,17 @@ module.exports = () => {
         tars.require('webpack')(require(`${cwd}/webpack.config`), (error, stats) => {
 
             if (!error) {
-                error = stats
-                    .toJson()
-                    .errors[0];
+                error = stats.toJson().errors[0];
             }
 
             if (error) {
                 notifier.error('JavaScript has not been processed', error);
             } else {
-                console.log(stats.toString({colors: true}));
+                console.log(stats.toString({
+                    colors: true
+                }));
 
-                notifier.success('JavaScript has been processed', {notStream: true});
+                notifier.success('JavaScript has been processed', { notStream: true });
 
                 if (tars.useLiveReload) {
                     browserSync.reload();
@@ -32,7 +32,12 @@ module.exports = () => {
 
             // Task never errs in watch mode, it waits and recompiles
             if (!tars.options.watch.isActive && error) {
-                done(new gutil.PluginError('webpack-processing', new Error('An error occured during webpack build process')));
+                done(
+                    new gutil.PluginError(
+                        'webpack-processing',
+                        new Error('An error occured during webpack build process')
+                    )
+                );
             } else {
                 if (!done.called) {
                     done.called = true;

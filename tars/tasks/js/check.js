@@ -5,16 +5,13 @@ const cache = tars.packages.cache;
 const plumber = tars.packages.plumber;
 const notifier = tars.helpers.notifier;
 
-const jsPathesToLint = []
-    .concat
-    .apply([], [
-        `./markup/${tars.config.fs.componentsFolderName}/**/*.js`, `!./markup/${tars.config.fs.componentsFolderName}/**/_*.js`, `!./markup/${tars.config.fs.componentsFolderName}/**/data/data.js`, tars.config.js.lintJsCodeBeforeModules
-            ? tars.config.js.jsPathsToConcatBeforeModulesJs
-            : [],
-        tars.config.js.lintJsCodeAfterModules
-            ? tars.config.js.jsPathsToConcatAfterModulesJs
-            : []
-    ]);
+const jsPathesToLint = [].concat.apply([], [
+    `./markup/${tars.config.fs.componentsFolderName}/**/*.js`,
+    `!./markup/${tars.config.fs.componentsFolderName}/**/_*.js`,
+    `!./markup/${tars.config.fs.componentsFolderName}/**/data/data.js`,
+    tars.config.js.lintJsCodeBeforeModules ? tars.config.js.jsPathsToConcatBeforeModulesJs : [],
+    tars.config.js.lintJsCodeAfterModules ? tars.config.js.jsPathsToConcatAfterModulesJs : []
+]);
 
 /**
  * Check JS for style and errors (optional task)
@@ -36,8 +33,7 @@ module.exports = () => {
                 default:
                     const eslint = tars.require('gulp-eslint');
 
-                    return gulp
-                        .src(jsPathesToLint)
+                    return gulp.src(jsPathesToLint)
                         .pipe(plumber({
                             errorHandler() {
                                 notifier.error('An error occurred while checking js.');

@@ -23,24 +23,24 @@ module.exports = function generateStaticPath() {
 
     return through2.obj(function (file, enc, callback) {
         // Get all directories array for current page from page directory
-        const directoriesArray = path
-            .parse(file.relative)
-            .dir
-            .split(path.sep);
+        const directoriesArray = path.parse(file.relative).dir.split(path.sep);
         // Generate static path as '../' as many times, as directories array length + tars.config.staticPrefix
         const pageDepth = directoriesArray.map(value => {
             if (value) {
                 return '../';
             }
         });
-        let newPageContent = file
-            .contents
-            .toString();
+        let newPageContent = file.contents.toString();
 
-        newPageContent = newPageContent.replace(/%=staticPrefix=%|%=static=%|__static__/g, getStaticPrefix(pageDepth));
+        newPageContent = newPageContent.replace(
+            /%=staticPrefix=%|%=static=%|__static__/g, getStaticPrefix(pageDepth)
+        );
 
-        if (tars.config.svg.active && tars.config.svg.workflow === 'symbols' && tars.config.svg.symbolsConfig.loadingType === 'separate-file-with-link') {
-            newPageContent = newPageContent.replace(/xlink:href="(.*)"/gim, (str, $1) => `xlink:href="${pageDepth.join('') + $1}"`);
+        if (tars.config.svg.active && tars.config.svg.workflow === 'symbols' &&
+            tars.config.svg.symbolsConfig.loadingType === 'separate-file-with-link') {
+            newPageContent = newPageContent.replace(
+                /xlink:href="(.*)"/gim, (str, $1) => `xlink:href="${pageDepth.join('') + $1}"`
+            );
         }
 
         file.contents = new Buffer(newPageContent);

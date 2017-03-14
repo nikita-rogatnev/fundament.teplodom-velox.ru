@@ -8,7 +8,7 @@
 
 /* Module data example */
 
-_template : {
+_template: {
     big: {
         title: 'Hello world',
         age: 10,

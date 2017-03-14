@@ -7,9 +7,7 @@ const webpack = tars.require('webpack');
 const staticFolderName = tars.config.fs.staticFolderName;
 const compressJs = tars.flags.release || tars.flags.min;
 const generateSourceMaps = tars.config.sourcemaps.js.active && tars.isDevMode;
-const sourceMapsDest = tars.config.sourcemaps.js.inline
-    ? 'inline-'
-    : '';
+const sourceMapsDest = tars.config.sourcemaps.js.inline ? 'inline-' : '';
 const sourceMapsType = `#${sourceMapsDest}source-map`;
 
 let outputFileNameTemplate = '[name]';
@@ -20,17 +18,17 @@ let preLoaders = [
         loader: 'source-map-loader'
     }
 ];
-let loaders = [
-    {
-        test: /\.json$/,
-        loader: 'json'
-    }
-];
-let plugins = [new webpack.DefinePlugin({
+let loaders = [{
+    test: /\.json$/,
+    loader: 'json'
+}];
+let plugins = [
+    new webpack.DefinePlugin({
         'process.env': {
             NODE_ENV: JSON.stringify(process.env.NODE_ENV)
         }
-    })];
+    })
+];
 
 if (process.env.npmRoot) {
     modulesDirectories.push(process.env.npmRoot);
@@ -38,31 +36,50 @@ if (process.env.npmRoot) {
 
 if (compressJs) {
     outputFileNameTemplate += `${tars.options.build.hash}.min`;
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-        compress: {
-            /* eslint-disable camelcase */
-            drop_console: tars.config.js.removeConsoleLog,
-            drop_debugger: tars.config.js.removeConsoleLog
-            /* eslint-enable camelcase */
-        },
-        mangle: false
-    }), new webpack.optimize.DedupePlugin());
+    plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                /* eslint-disable camelcase */
+                drop_console: tars.config.js.removeConsoleLog,
+                drop_debugger: tars.config.js.removeConsoleLog
+                /* eslint-enable camelcase */
+            },
+            mangle: false
+        }),
+        new webpack.optimize.DedupePlugin()
+    );
 }
 
 if (tars.config.js.webpack.providePlugin) {
-    plugins.push(new webpack.ProvidePlugin(tars.config.js.webpack.providePlugin))
+    plugins.push(
+        new webpack.ProvidePlugin(tars.config.js.webpack.providePlugin)
+    )
 }
 
 if (tars.options.watch.isActive && tars.config.js.webpack.useHMR) {
-    plugins.push(new webpack.HotModuleReplacementPlugin());
+    plugins.push(
+        new webpack.HotModuleReplacementPlugin()
+    );
 }
 
 if (tars.config.js.lint) {
-    preLoaders.push({test: /\.js$/, loader: 'eslint-loader', include: `${cwd}/markup`});
+    preLoaders.push(
+        {
+            test: /\.js$/,
+            loader: 'eslint-loader',
+            include: `${cwd}/markup`
+        }
+    );
 }
 
 if (tars.config.js.useBabel) {
-    loaders.push({test: /\.js$/, loader: 'babel', include: /markup/});
+    loaders.push(
+        {
+            test: /\.js$/,
+            loader: 'babel',
+            include: /markup/
+        }
+    );
 }
 
 /**
@@ -72,7 +89,10 @@ if (tars.config.js.useBabel) {
  */
 function prepareEntryPoints(entryConfig) {
     const useHMR = tars.config.js.webpack.useHMR;
-    let devServerEntryPoints = ['webpack/hot/dev-server', 'webpack-hot-middleware/client?reload=true'];
+    let devServerEntryPoints = [
+        'webpack/hot/dev-server',
+        'webpack-hot-middleware/client?reload=true'
+    ];
 
     if (!useHMR || !tars.useLiveReload) {
         return entryConfig;
@@ -104,9 +124,7 @@ module.exports = {
         filename: `${outputFileNameTemplate}.js`
     },
 
-    devtool: generateSourceMaps
-        ? sourceMapsType
-        : null,
+    devtool: generateSourceMaps ? sourceMapsType : null,
 
     watch: tars.options.watch.isActive && !tars.config.js.webpack.useHMR,
 

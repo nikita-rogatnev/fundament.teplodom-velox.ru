@@ -21,9 +21,7 @@ module.exports = function generateTaskContent(browser) {
     const preprocName = tars.cssPreproc.name;
     const capitalizePreprocName = stringHelper.capitalizeFirstLetter(preprocName);
     const stylesFolderPath = `./markup/${tars.config.fs.staticFolderName}/${preprocName}`;
-    const sourceMapsDest = tars.config.sourcemaps.css.inline
-        ? ''
-        : '.';
+    const sourceMapsDest = tars.config.sourcemaps.css.inline ? '' : '.';
 
     let successMessage = `${capitalizePreprocName}-files have been compiled`;
     let errorMessage = 'An error occurred while compiling css';
@@ -32,7 +30,13 @@ module.exports = function generateTaskContent(browser) {
 
     let postProcessors = [];
     let stylesFilesToConcatinate = [];
-    let firstStylesFilesToConcatinate = [`${stylesFolderPath}/normalize.${preprocExtensions}`, `${stylesFolderPath}/libraries/**/*.${preprocExtensions}`, `${stylesFolderPath}/libraries/**/*.css`, `${stylesFolderPath}/mixins.${preprocExtensions}`, `${stylesFolderPath}/sprites-${preprocName}/sprite_96.${preprocExtensions}`];
+    let firstStylesFilesToConcatinate = [
+        `${stylesFolderPath}/normalize.${preprocExtensions}`,
+        `${stylesFolderPath}/libraries/**/*.${preprocExtensions}`,
+        `${stylesFolderPath}/libraries/**/*.css`,
+        `${stylesFolderPath}/mixins.${preprocExtensions}`,
+        `${stylesFolderPath}/sprites-${preprocName}/sprite_96.${preprocExtensions}`
+    ];
     const generalStylesFilesToConcatinate = [
         `${stylesFolderPath}/fonts.${preprocExtensions}`,
         `${stylesFolderPath}/vars.${preprocExtensions}`,
@@ -53,23 +57,32 @@ module.exports = function generateTaskContent(browser) {
     ];
 
     if (tars.config.postcss && tars.config.postcss.length) {
-        tars
-            .config
-            .postcss
-            .forEach(postProcessor => {
-                postProcessors.push(require(postProcessor.name)(postProcessor.options));
-            });
+        tars.config.postcss.forEach(postProcessor => {
+            postProcessors.push(require(postProcessor.name)(postProcessor.options));
+        });
     }
 
     if (preprocName === 'less' || preprocName === 'stylus') {
-        firstStylesFilesToConcatinate.push(`${stylesFolderPath}/sprites-${preprocName}/sprite-png.${preprocExtensions}`);
+        firstStylesFilesToConcatinate.push(
+            `${stylesFolderPath}/sprites-${preprocName}/sprite-png.${preprocExtensions}`
+        );
     }
 
     switch (browser) {
         case 'ie8':
-            stylesFilesToConcatinate.push(firstStylesFilesToConcatinate, `${stylesFolderPath}/sprites-${preprocName}/svg-fallback-sprite.${preprocExtensions}`, `${stylesFolderPath}/sprites-${preprocName}/sprite-ie.${preprocExtensions}`, generalStylesFilesToConcatinate, `./markup/${tars.config.fs.componentsFolderName}/**/ie/ie8.${preprocExtensions}`, `./markup/${tars.config.fs.componentsFolderName}/**/ie/ie8.css`, lastStylesFilesToConcatinate);
+            stylesFilesToConcatinate.push(
+                firstStylesFilesToConcatinate,
+                `${stylesFolderPath}/sprites-${preprocName}/svg-fallback-sprite.${preprocExtensions}`,
+                `${stylesFolderPath}/sprites-${preprocName}/sprite-ie.${preprocExtensions}`,
+                generalStylesFilesToConcatinate,
+                `./markup/${tars.config.fs.componentsFolderName}/**/ie/ie8.${preprocExtensions}`,
+                `./markup/${tars.config.fs.componentsFolderName}/**/ie/ie8.css`,
+                lastStylesFilesToConcatinate
+            );
 
-            postProcessors.push(autoprefixer({browsers: ['ie 8']}));
+            postProcessors.push(
+                autoprefixer({browsers: ['ie 8']})
+            );
 
             generateSourceMaps = false;
 
@@ -80,15 +93,26 @@ module.exports = function generateTaskContent(browser) {
 
             break;
         case 'ie9':
-            stylesFilesToConcatinate.push(firstStylesFilesToConcatinate);
+            stylesFilesToConcatinate.push(
+                firstStylesFilesToConcatinate
+            );
 
             if (tars.config.svg.active && tars.config.svg.workflow === 'sprite') {
-                stylesFilesToConcatinate.push(`${stylesFolderPath}/sprites-${preprocName}/svg-sprite.${preprocExtensions}`);
+                stylesFilesToConcatinate.push(
+                    `${stylesFolderPath}/sprites-${preprocName}/svg-sprite.${preprocExtensions}`
+                );
             }
 
-            stylesFilesToConcatinate.push(generalStylesFilesToConcatinate, `./markup/${tars.config.fs.componentsFolderName}/**/ie/ie9.${preprocExtensions}`, `./markup/${tars.config.fs.componentsFolderName}/**/ie/ie9.css`, lastStylesFilesToConcatinate);
+            stylesFilesToConcatinate.push(
+                generalStylesFilesToConcatinate,
+                `./markup/${tars.config.fs.componentsFolderName}/**/ie/ie9.${preprocExtensions}`,
+                `./markup/${tars.config.fs.componentsFolderName}/**/ie/ie9.css`,
+                lastStylesFilesToConcatinate
+            );
 
-            postProcessors.push(autoprefixer({browsers: ['ie 9']}));
+            postProcessors.push(
+                autoprefixer({browsers: ['ie 9']})
+            );
 
             compiledFileName += `_${browser}`;
 
@@ -98,18 +122,31 @@ module.exports = function generateTaskContent(browser) {
             errorMessage = 'An error occurred while compiling css for IE9.';
 
             break;
-            // Styles for all browsers except IE8, IE9
+        // Styles for all browsers except IE8, IE9
         default:
-            stylesFilesToConcatinate.push(firstStylesFilesToConcatinate);
+            stylesFilesToConcatinate.push(
+                firstStylesFilesToConcatinate
+            );
 
             if (tars.config.svg.active && tars.config.svg.workflow === 'sprite') {
-                stylesFilesToConcatinate.push(`${stylesFolderPath}/sprites-${preprocName}/svg-sprite.${preprocExtensions}`, `!./markup/${tars.config.fs.componentsFolderName}/**/ie/ie9.${preprocExtensions}`, `!./markup/${tars.config.fs.componentsFolderName}/**/ie/ie9.css`, `!./markup/${tars.config.fs.componentsFolderName}/**/ie/ie8.${preprocExtensions}`, `!./markup/${tars.config.fs.componentsFolderName}/**/ie/ie8.css`);
+                stylesFilesToConcatinate.push(
+                    `${stylesFolderPath}/sprites-${preprocName}/svg-sprite.${preprocExtensions}`,
+                    `!./markup/${tars.config.fs.componentsFolderName}/**/ie/ie9.${preprocExtensions}`,
+                    `!./markup/${tars.config.fs.componentsFolderName}/**/ie/ie9.css`,
+                    `!./markup/${tars.config.fs.componentsFolderName}/**/ie/ie8.${preprocExtensions}`,
+                    `!./markup/${tars.config.fs.componentsFolderName}/**/ie/ie8.css`
+                );
             }
 
-            stylesFilesToConcatinate.push(generalStylesFilesToConcatinate, lastStylesFilesToConcatinate);
+            stylesFilesToConcatinate.push(
+                generalStylesFilesToConcatinate,
+                lastStylesFilesToConcatinate
+            );
 
             if (tars.pluginsConfig.autoprefixerConfig) {
-                postProcessors.push(autoprefixer({browsers: tars.pluginsConfig.autoprefixerConfig}));
+                postProcessors.push(
+                    autoprefixer({browsers: tars.pluginsConfig.autoprefixerConfig})
+                );
             }
 
             generateSourceMaps = tars.config.sourcemaps.css.active && tars.options.watch.isActive;
@@ -117,14 +154,9 @@ module.exports = function generateTaskContent(browser) {
             break;
     }
 
-    stylesFilesToConcatinate = []
-        .concat
-        .apply([], stylesFilesToConcatinate);
+    stylesFilesToConcatinate = [].concat.apply([], stylesFilesToConcatinate);
 
-    return gulp
-        .src(stylesFilesToConcatinate, {
-        base: process.cwd()
-    })
+    return gulp.src(stylesFilesToConcatinate, { base: process.cwd() })
         .pipe(gulpif(generateSourceMaps, sourcemaps.init()))
         .pipe(plumber({
             errorHandler(error) {
@@ -132,7 +164,9 @@ module.exports = function generateTaskContent(browser) {
                 this.emit('end');
             }
         }))
-        .pipe(importify(compiledFileName + '.' + tars.cssPreproc.mainExt, {cssPreproc: preprocName}))
+        .pipe(importify(compiledFileName + '.' + tars.cssPreproc.mainExt, {
+            cssPreproc: preprocName
+        }))
         .pipe(tars.cssPreproc.preprocessor())
         .pipe(replace({
             patterns: [
@@ -147,6 +181,8 @@ module.exports = function generateTaskContent(browser) {
         .pipe(concat(`${compiledFileName}${tars.options.build.hash}.css`))
         .pipe(gulpif(generateSourceMaps, sourcemaps.write(sourceMapsDest)))
         .pipe(gulp.dest(`./dev/${tars.config.fs.staticFolderName}/css/`))
-        .pipe(browserSync.reload({stream: true, match: '**/*.css'}))
-        .pipe(notifier.success(successMessage));
+        .pipe(browserSync.reload({ stream: true, match: '**/*.css' }))
+        .pipe(
+            notifier.success(successMessage)
+        );
 };

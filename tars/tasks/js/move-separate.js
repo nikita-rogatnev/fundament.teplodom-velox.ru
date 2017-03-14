@@ -13,8 +13,7 @@ const separateJsFilesPath = `${tars.config.fs.staticFolderName}/js/separate-js`;
  */
 module.exports = () => {
     return gulp.task('js:move-separate', () => {
-        return gulp
-            .src(`./markup/${separateJsFilesPath}/**/*.js`)
+        return gulp.src(`./markup/${separateJsFilesPath}/**/*.js`)
             .pipe(plumber({
                 errorHandler(error) {
                     notifier.error('An error occurred while moving separate js-files.', error);
@@ -23,6 +22,8 @@ module.exports = () => {
             .pipe(separateFilesFilter())
             .pipe(cache('separate-js'))
             .pipe(gulp.dest(`./dev/${separateJsFilesPath}`))
-            .pipe(notifier.success('Separate js files\'s been copied'));
+            .pipe(
+                notifier.success('Separate js files\'s been copied')
+            );
     });
 };

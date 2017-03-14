@@ -11,20 +11,31 @@ const notifier = tars.helpers.notifier;
 module.exports = () => {
     return gulp.task('html:modify-html', () => {
         const usersModifyOptions = require(tars.root + '/user-tasks/html/helpers/modify-options');
-        const minifyOpts = Object.assign(tars.pluginsConfig['gulp-htmlmin'], usersModifyOptions.minifyOpts);
+        const minifyOpts = Object.assign(
+            tars.pluginsConfig['gulp-htmlmin'],
+            usersModifyOptions.minifyOpts
+        );
         /* eslint-disable camelcase */
-        const prettifyOpts = Object.assign(tars.pluginsConfig['gulp-html-prettify'], usersModifyOptions.prettifyOpts);
+        const prettifyOpts = Object.assign(
+            tars.pluginsConfig['gulp-html-prettify'],
+            usersModifyOptions.prettifyOpts
+        );
         /* eslint-enable camelcase */
 
-        return gulp
-            .src('./dev/**/*.html')
+        return gulp.src('./dev/**/*.html')
             .pipe(plumber({
                 errorHandler(error) {
                     notifier.error('An error occurred while processing compiled html-files.', error);
                 }
             }))
-            .pipe(gulpif(tars.config.minifyHtml, tars.require('gulp-htmlmin')(minifyOpts), tars.require('gulp-html-prettify')(prettifyOpts)))
+            .pipe(gulpif(
+                tars.config.minifyHtml,
+                tars.require('gulp-htmlmin')(minifyOpts),
+                tars.require('gulp-html-prettify')(prettifyOpts)
+            ))
             .pipe(gulp.dest('./dev/'))
-            .pipe(notifier.success('Compiled html\'ve been processed.'));
+            .pipe(
+                notifier.success('Compiled html\'ve been processed.')
+            );
     });
 };

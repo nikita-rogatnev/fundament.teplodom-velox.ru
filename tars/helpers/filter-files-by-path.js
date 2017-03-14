@@ -9,9 +9,7 @@ module.exports = function filterFilesByPath(patterns) {
     const patternsToCheck = [].concat(patterns);
 
     return through2.obj(function (file, enc, callback) {
-        const filePath = file
-            .path
-            .replace(/\\/g, '/');
+        const filePath = file.path.replace(/\\/g, '/');
         let checkStatus = true;
 
         patternsToCheck.forEach(pattern => {

@@ -20,57 +20,66 @@ module.exports = function generateTaskContent(browser) {
     const preprocName = tars.cssPreproc.name;
     const capitalizePreprocName = stringHelper.capitalizeFirstLetter(preprocName);
     const stylesFolderPath = `./markup/${tars.config.fs.staticFolderName}/${preprocName}`;
-    const sourceMapsDest = tars.config.sourcemaps.css.inline
-        ? ''
-        : '.';
+    const sourceMapsDest = tars.config.sourcemaps.css.inline ? '' : '.';
     let successMessage = `${capitalizePreprocName}-files have been compiled`;
     let errorMessage = 'An error occurred while compiling css';
     let generateSourceMaps = false;
 
     let postProcessors = [];
-    let stylesFilesToCompile = [`!./**/_*.${preprocExtensions}`, '!./**/_*.css'];
+    let stylesFilesToCompile = [
+        `!./**/_*.${preprocExtensions}`,
+        '!./**/_*.css'
+    ];
 
     if (tars.config.postcss && tars.config.postcss.length) {
-        tars
-            .config
-            .postcss
-            .forEach(postProcessor => {
-                postProcessors.push(require(postProcessor.name)(postProcessor.options));
-            });
+        tars.config.postcss.forEach(postProcessor => {
+            postProcessors.push(require(postProcessor.name)(postProcessor.options));
+        });
     }
     switch (browser) {
         case 'ie8':
-            stylesFilesToCompile.push(`${stylesFolderPath}/entry/ie/*_ie8.${preprocExtensions}`);
+            stylesFilesToCompile.push(
+                `${stylesFolderPath}/entry/ie/*_ie8.${preprocExtensions}`
+            );
 
-            postProcessors.push(autoprefixer({browsers: ['ie 8']}));
+            postProcessors.push(
+                autoprefixer({browsers: ['ie 8']})
+            );
 
             generateSourceMaps = false;
             successMessage = `${capitalizePreprocName}-files for IE8 have been compiled`;
             errorMessage = 'An error occurred while compiling css for IE8.';
             break;
         case 'ie9':
-            stylesFilesToCompile.push(`${stylesFolderPath}/entry/ie/*_ie9.${preprocExtensions}`);
+            stylesFilesToCompile.push(
+                `${stylesFolderPath}/entry/ie/*_ie9.${preprocExtensions}`
+            );
 
-            postProcessors.push(autoprefixer({browsers: ['ie 9']}));
+            postProcessors.push(
+                autoprefixer({browsers: ['ie 9']})
+            );
 
             generateSourceMaps = false;
             successMessage = `${capitalizePreprocName}-files for IE9 have been compiled`;
             errorMessage = 'An error occurred while compiling css for IE9.';
             break;
-            // Styles for all browsers except IE8, IE9
+        // Styles for all browsers except IE8, IE9
         default:
-            stylesFilesToCompile.push(`${stylesFolderPath}/entry/*.${preprocExtensions}`);
+            stylesFilesToCompile.push(
+                `${stylesFolderPath}/entry/*.${preprocExtensions}`
+            );
 
             if (tars.pluginsConfig.autoprefixerConfig) {
-                postProcessors.push(autoprefixer({browsers: tars.pluginsConfig.autoprefixerConfig}));
+                postProcessors.push(
+                    autoprefixer({browsers: tars.pluginsConfig.autoprefixerConfig})
+                );
             }
 
             generateSourceMaps = tars.config.sourcemaps.css.active && tars.options.watch.isActive;
             break;
     }
 
-    return gulp
-        .src(stylesFilesToCompile)
+    return gulp.src(stylesFilesToCompile)
         .pipe(gulpif(generateSourceMaps, sourcemaps.init()))
         .pipe(plumber({
             errorHandler(error) {
@@ -89,9 +98,11 @@ module.exports = function generateTaskContent(browser) {
             usePrefix: false
         }))
         .pipe(postcss(postProcessors))
-        .pipe(rename({suffix: tars.options.build.hash}))
+        .pipe(rename({ suffix: tars.options.build.hash }))
         .pipe(gulpif(generateSourceMaps, sourcemaps.write(sourceMapsDest)))
         .pipe(gulp.dest(`./dev/${tars.config.fs.staticFolderName}/css/`))
-        .pipe(browserSync.reload({stream: true, match: '**/*.css'}))
-        .pipe(notifier.success(successMessage));
+        .pipe(browserSync.reload({ stream: true, match: '**/*.css' }))
+        .pipe(
+            notifier.success(successMessage)
+        );
 };

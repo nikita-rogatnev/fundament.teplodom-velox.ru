@@ -1,0 +1,9 @@
+<nav class="menu {{#if mod}} _{{mod}} {{/if}}">
+    <ul class="menu__items">
+        {{#each list}}
+        <li class="menu__item">
+            <a href="{{ur}}" class="menu__link">{{title}}</a>
+        </li>
+        {{/each}}
+    </ul>
+</nav>

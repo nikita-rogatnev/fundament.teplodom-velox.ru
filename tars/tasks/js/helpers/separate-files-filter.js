@@ -18,7 +18,11 @@ module.exports = function separateFilesFilter() {
                 }
                 break;
             case 'svg4everybody.min.js':
-                if (tars.config.svg.active && tars.config.svg.workflow === 'symbols' && tars.config.svg.symbolsConfig.loadingType === 'separate-file-with-link' && tars.config.svg.symbolsConfig.usePolyfillForExternalSymbols) {
+                if (
+                    tars.config.svg.active && tars.config.svg.workflow === 'symbols' &&
+                    tars.config.svg.symbolsConfig.loadingType === 'separate-file-with-link' &&
+                    tars.config.svg.symbolsConfig.usePolyfillForExternalSymbols
+                ) {
                     this.push(file); // eslint-disable-line no-invalid-this
                 }
                 break;

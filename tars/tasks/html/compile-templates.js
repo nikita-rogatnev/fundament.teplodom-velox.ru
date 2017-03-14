@@ -69,50 +69,77 @@ function concatComponentsData() {
 }
 
 if (!tars.flags.ie8 && !tars.flags.ie) {
-    patterns.push({match: /<!--\[if IE 8.*endif\]-->|<!--\[if lt IE 9.*endif\]-->/gm, replacement: ''});
+    patterns.push(
+        {
+            match: /<!--\[if IE 8.*endif\]-->|<!--\[if lt IE 9.*endif\]-->/gm,
+            replacement: ''
+        }
+    );
 }
 
 if (!tars.flags.ie9 && !tars.flags.ie) {
-    patterns.push({match: /<!--\[if IE 9.*endif\]-->/gm, replacement: ''});
+    patterns.push(
+        {
+            match: /<!--\[if IE 9.*endif\]-->/gm,
+            replacement: ''
+        }
+    );
 }
 
-patterns.push({
-    match: '%=min=%',
-    replacement: tars.flags.min || tars.flags.release
-        ? '.min'
-        : ''
-}, {
-    match: '%=hash=%',
-    replacement: tars.flags.release
-        ? tars.options.build.hash
-        : ''
-});
-
-if (tars.config.svg.active && tars.config.svg.workflow === 'symbols' && tars.config.svg.symbolsConfig.loadingType === 'inject') {
-    patterns.push({match: '%=symbols=%', replacement: (() => {
-
-            /* eslint-disable no-unused-vars */
-
-            try {
-                return fs.readFileSync(`./dev/temp/svg-symbols${tars.options.build.hash}.svg`, 'utf8');
-            } catch (error) {
-                return '';
-            }
-
-            /* eslint-enable no-unused-vars */
-        })});
-} else {
-    patterns.push({match: '%=symbols=%', replacement: ''});
-}
-
-if (!tars.config.svg.active || tars.config.svg.workflow !== 'symbols' || tars.config.svg.symbolsConfig.loadingType !== 'separate-file-with-link' || !tars.config.svg.symbolsConfig.usePolyfillForExternalSymbols) {
-    patterns.push({
-        match: '<script src="%=static=%js/separate-js/svg4everybody.min.js"></script>',
-        replacement: ''
+patterns.push(
+    {
+        match: '%=min=%',
+        replacement: tars.flags.min || tars.flags.release ? '.min' : ''
     }, {
-        match: '<script>svg4everybody();</script>',
-        replacement: ''
-    });
+        match: '%=hash=%',
+        replacement: tars.flags.release ? tars.options.build.hash : ''
+    }
+);
+
+if (
+    tars.config.svg.active && tars.config.svg.workflow === 'symbols' &&
+    tars.config.svg.symbolsConfig.loadingType === 'inject'
+) {
+    patterns.push(
+        {
+            match: '%=symbols=%',
+            replacement: (() => {
+
+                /* eslint-disable no-unused-vars */
+
+                try {
+                    return fs.readFileSync(`./dev/temp/svg-symbols${tars.options.build.hash}.svg`, 'utf8');
+                } catch (error) {
+                    return '';
+                }
+
+                /* eslint-enable no-unused-vars */
+            })
+        }
+    );
+} else {
+    patterns.push(
+        {
+            match: '%=symbols=%',
+            replacement: ''
+        }
+    );
+}
+
+if (
+    !tars.config.svg.active || tars.config.svg.workflow !== 'symbols' ||
+    tars.config.svg.symbolsConfig.loadingType !== 'separate-file-with-link' ||
+    !tars.config.svg.symbolsConfig.usePolyfillForExternalSymbols
+) {
+    patterns.push(
+        {
+            match: '<script src="%=static=%js/separate-js/svg4everybody.min.js"></script>',
+            replacement: ''
+        }, {
+            match: '<script>svg4everybody();</script>',
+            replacement: ''
+        }
+    );
 }
 
 /**
@@ -128,18 +155,17 @@ function jadeAndPugInheritanceProcessing() {
     const isInheritanceEnabled = tars.options.watch.isActive && templaterIsPugOrJade;
 
     if (isInheritanceEnabled) {
-        return tars
-            .packages
-            .streamCombiner(tars.packages.cache('templates'), tars.require(`gulp-${templaterName}-inheritance`)(inheritanceOptions), tars.helpers.filterFilesByPath([
+        return tars.packages.streamCombiner(
+            tars.packages.cache('templates'),
+            tars.require(`gulp-${templaterName}-inheritance`)(inheritanceOptions),
+            tars.helpers.filterFilesByPath([
                 new RegExp(`\/markup\/${tars.config.fs.componentsFolderName}\/`),
                 /_[\w]+.(jade|pug)/
-            ]));
+            ])
+        );
     }
 
-    return tars
-        .packages
-        .gutil
-        .noop();
+    return tars.packages.gutil.noop();
 }
 
 /**
@@ -151,10 +177,16 @@ module.exports = () => {
         let mocksData;
         let error;
         let compileError;
-        let filesToCompile = [`./markup/pages/**/*.${tars.templater.ext}`, `!./markup/pages/**/_*.${tars.templater.ext}`];
+        let filesToCompile = [
+            `./markup/pages/**/*.${tars.templater.ext}`,
+            `!./markup/pages/**/_*.${tars.templater.ext}`
+        ];
 
         if (templaterIsPugOrJade && tars.options.watch.isActive) {
-            filesToCompile.push(`!./markup/${tars.config.fs.componentsFolderName}/**/_*.${tars.templater.ext}`, `./markup/${tars.config.fs.componentsFolderName}/**/*.${tars.templater.ext}`);
+            filesToCompile.push(
+                `!./markup/${tars.config.fs.componentsFolderName}/**/_*.${tars.templater.ext}`,
+                `./markup/${tars.config.fs.componentsFolderName}/**/*.${tars.templater.ext}`
+            );
         }
 
         try {
@@ -164,8 +196,7 @@ module.exports = () => {
             mocksData = false;
         }
 
-        return gulp
-            .src(filesToCompile)
+        return gulp.src(filesToCompile)
             .pipe(plumber({
                 errorHandler(pipeError) {
                     notifier.error('An error occurred while compiling to html.', pipeError);
@@ -174,23 +205,28 @@ module.exports = () => {
                 }
             }))
             .pipe(jadeAndPugInheritanceProcessing())
-            .pipe(mocksData
-                ? tars.templater.fn(mocksData)
-                : through2.obj(function () {
-                    /* eslint-disable no-invalid-this */
+            .pipe(
+                mocksData
+                    ? tars.templater.fn(mocksData)
+                    : through2.obj(
+                        function () {
+                            /* eslint-disable no-invalid-this */
 
-                    this.emit('error', new Error('An error occurred with data-files!\n' + error));
+                            this.emit('error', new Error('An error occurred with data-files!\n' + error));
 
-                    /* eslint-enable no-invalid-this */
-                }))
-            .pipe(replace({patterns: patterns, usePrefix: false}))
+                            /* eslint-enable no-invalid-this */
+                        }
+                    )
+            )
+            .pipe(replace({
+                patterns: patterns,
+                usePrefix: false
+            }))
             .pipe(generateStaticPath())
             .pipe(rename(pathToFileToRename => {
 
                 if (templaterIsPugOrJade) {
-                    pathToFileToRename.dirname = pathToFileToRename
-                        .dirname
-                        .replace(/^pages/, '');
+                    pathToFileToRename.dirname = pathToFileToRename.dirname.replace(/^pages/, '');
                 }
 
                 pathToFileToRename.extname = '.html';
@@ -199,7 +235,7 @@ module.exports = () => {
             .on('end', () => {
                 if (!compileError) {
                     browserSync.reload();
-                    notifier.success('Templates\'ve been compiled', {notStream: true});
+                    notifier.success('Templates\'ve been compiled', { notStream: true });
                 }
             });
     });

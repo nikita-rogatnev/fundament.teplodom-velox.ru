@@ -13,8 +13,7 @@ const fontsFolderPath = `${tars.config.fs.staticFolderName}/fonts`;
  */
 module.exports = () => {
     return gulp.task('other:move-fonts', () => {
-        return gulp
-            .src(`./markup/${fontsFolderPath}/**/*.*`)
+        return gulp.src(`./markup/${fontsFolderPath}/**/*.*`)
             .pipe(plumber({
                 errorHandler(error) {
                     notifier.error('An error occurred while moving fonts.', error);
@@ -22,7 +21,9 @@ module.exports = () => {
             }))
             .pipe(cache('move-fonts'))
             .pipe(gulp.dest(`./dev/${fontsFolderPath}`))
-            .pipe(browserSync.reload({stream: true}))
-            .pipe(notifier.success('Fonts\'ve been moved'));
+            .pipe(browserSync.reload({ stream: true }))
+            .pipe(
+                notifier.success('Fonts\'ve been moved')
+            );
     });
 };

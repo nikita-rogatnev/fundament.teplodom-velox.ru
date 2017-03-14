@@ -49,14 +49,17 @@ module.exports = () => {
                     version = 'version-' + require(process.cwd() + '/tars.json').version;
                 }
 
-                new Download({mode: '755'})
+                new Download({ mode: '755' })
                     .get(makeUrl(type, version))
                     .run(error => {
                         if (error) {
                             version = 'master';
                         }
 
-                        resolve({version, type});
+                        resolve({
+                            version,
+                            type
+                        });
                     });
             });
         }
@@ -76,7 +79,7 @@ module.exports = () => {
                     destPath = './.tmpPreproc';
                 }
 
-                new Download({extract: true, mode: '755'})
+                new Download({ extract: true, mode: '755' })
                     .get(makeUrl(params.type, params.version))
                     .dest(destPath)
                     .run(error => {
@@ -96,51 +99,76 @@ module.exports = () => {
         function applyDownloadedParts(params) {
             return new Promise((resolveDownloadedPartsApplying, rejectDownloadedPartsApplying) => {
 
-                if ((params.type === 'templater' && tars.flags['exclude-html']) || (params.type === 'preprocessor' && tars.flags['exclude-css'])) {
+                if (
+                    (params.type === 'templater' && tars.flags['exclude-html']) ||
+                    (params.type === 'preprocessor' && tars.flags['exclude-css'])
+                ) {
                     return resolveDownloadedPartsApplying();
                 }
 
                 if (params.type === 'templater') {
-                    Promise.all([
-                        new Promise((resolve, reject) => {
-                            ncp(`./.tmpTemplater/tars-${tars.templater.name}-${params.version}/markup/pages`, './markup/pages', error => {
-                                if (error) {
-                                    return reject(error);
-                                }
-                                return resolve();
-                            });
-                        }),
-                        new Promise((resolve, reject) => {
-                            const componentsFolderName = tars.config.fs.componentsFolderName;
-                            ncp(`./.tmpTemplater/tars-${tars.templater.name}-${params.version}/markup/components`, `./markup/${componentsFolderName}`, error => {
-                                if (error) {
-                                    return reject(error);
-                                }
+                    Promise
+                        .all([
+                            new Promise((resolve, reject) => {
+                                ncp(
+                                    `./.tmpTemplater/tars-${tars.templater.name}-${params.version}/markup/pages`,
+                                    './markup/pages',
+                                    error => {
+                                        if (error) {
+                                            return reject(error);
+                                        }
+                                        return resolve();
+                                    }
+                                );
+                            }),
+                            new Promise((resolve, reject) => {
+                                const componentsFolderName = tars.config.fs.componentsFolderName;
+                                ncp(
+                                    `./.tmpTemplater/tars-${tars.templater.name}-${params.version}/markup/components`,
+                                    `./markup/${componentsFolderName}`,
+                                    error => {
+                                        if (error) {
+                                            return reject(error);
+                                        }
 
-                                return resolve();
-                            });
-                        })
-                    ]).then(() => resolveDownloadedPartsApplying()).catch(error => rejectDownloadedPartsApplying(error));
+                                        return resolve();
+                                    }
+                                );
+                            })
+                        ])
+                        .then(() => resolveDownloadedPartsApplying())
+                        .catch(error => rejectDownloadedPartsApplying(error));
                 } else {
                     const downloadedPreprocPartsPath = `./.tmpPreproc/tars-${tars.cssPreproc.name}-${params.version}/markup`;
-                    Promise.all([
-                        new Promise((resolve, reject) => {
-                            ncp(`${downloadedPreprocPartsPath}/static`, `./markup/${tars.config.fs.staticFolderName}`, error => {
-                                if (error) {
-                                    return reject(error);
-                                }
-                                return resolve();
-                            });
-                        }),
-                        new Promise((resolve, reject) => {
-                            ncp(`${downloadedPreprocPartsPath}/components`, `./markup/${tars.config.fs.componentsFolderName}`, error => {
-                                if (error) {
-                                    return reject(error);
-                                }
-                                return resolve();
-                            });
-                        })
-                    ]).then(() => resolveDownloadedPartsApplying()).catch(error => rejectDownloadedPartsApplying(error));
+                    Promise
+                        .all([
+                            new Promise((resolve, reject) => {
+                                ncp(
+                                    `${downloadedPreprocPartsPath}/static`,
+                                    `./markup/${tars.config.fs.staticFolderName}`,
+                                    error => {
+                                        if (error) {
+                                            return reject(error);
+                                        }
+                                        return resolve();
+                                    }
+                                );
+                            }),
+                            new Promise((resolve, reject) => {
+                                ncp(
+                                    `${downloadedPreprocPartsPath}/components`,
+                                    `./markup/${tars.config.fs.componentsFolderName}`,
+                                    error => {
+                                        if (error) {
+                                            return reject(error);
+                                        }
+                                        return resolve();
+                                    }
+                                );
+                            })
+                        ])
+                        .then(() => resolveDownloadedPartsApplying())
+                        .catch(error => rejectDownloadedPartsApplying(error));
                 }
             });
         }
@@ -160,10 +188,12 @@ module.exports = () => {
                     tars.say('Let\'s create awesome markup!');
                 }
 
-                tars.say('You can find more info about TARS at ' + gutil.colors.cyan('"https://github.com/tars/tars/blob/master/README.md"'));
+                tars.say('You can find more info about TARS at ' +
+                            gutil.colors.cyan('"https://github.com/tars/tars/blob/master/README.md"'));
 
                 if (tars.cli) {
-                    tars.say('Run the command ' + gutil.colors.cyan('"tars --help"') + ' to see all avalible options and commands.');
+                    tars.say('Run the command ' + gutil.colors.cyan('"tars --help"') +
+                                ' to see all avalible options and commands.');
                     tars.say('Start your work with ' + gutil.colors.cyan('"tars dev"') + '.');
                 } else {
                     console.log('\n');
@@ -171,7 +201,8 @@ module.exports = () => {
                     tars.say(gutil.colors.red.bold('This mode is depricated for developing.'));
                     tars.say(gutil.colors.red.bold('Please, do not use "dev" tasks in with mode.\n'));
                     tars.say('Install tars-cli for developing.');
-                    tars.say('Run the command ' + gutil.colors.cyan('"npm i -g tars-cli"') + ', to install tars-cli.');
+                    tars.say('Run the command ' + gutil.colors.cyan('"npm i -g tars-cli"') +
+                                ', to install tars-cli.');
                     tars.say('More info: https://github.com/tars/tars-cli.');
                     console.log('\n\n');
                 }
@@ -213,11 +244,12 @@ module.exports = () => {
         }
 
         // Start init
-        Promise.all([
-            generateStartScreen(),
-            getVersionToDownload('templater')
-                .then(download)
-                .then(applyDownloadedParts),
+        Promise
+            .all([
+                generateStartScreen(),
+                getVersionToDownload('templater')
+                    .then(download)
+                    .then(applyDownloadedParts),
                 getVersionToDownload('preprocessor')
                     .then(download)
                     .then(applyDownloadedParts)

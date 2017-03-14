@@ -22,39 +22,53 @@ module.exports = () => {
         const errorText = 'An error occurred while making fallback for svg.';
 
         function actionsOnTaskSkipping() {
-            return actionsOnSpriteTaskSkipping({blankFilePath: `./markup/${staticFolderName}/${preprocName}/sprites-${preprocName}/svg-fallback-sprite.${preprocExtension}`, fileWithMixinsPath: `${tars.root}/tasks/css/helpers/sprite-mixins/${preprocName}-svg-fallback-sprite-mixins.${preprocExtension}`, errorText, done});
+            return actionsOnSpriteTaskSkipping({
+                blankFilePath: `./markup/${staticFolderName}/${preprocName}/sprites-${preprocName}/svg-fallback-sprite.${preprocExtension}`,
+                fileWithMixinsPath: `${tars.root}/tasks/css/helpers/sprite-mixins/${preprocName}-svg-fallback-sprite-mixins.${preprocExtension}`,
+                errorText,
+                done
+            });
         }
 
         if (tars.config.svg.active && tars.config.svg.workflow === 'sprite' && (tars.flags.ie8 || tars.flags.ie)) {
             const cssTemplatePath = `./markup/${staticFolderName}/${preprocName}/sprite-generator-templates`;
-            const spriteData = gulp
-                .src(`./dev/${staticFolderName}/${imagesFolderName}/rastered-svg-images/*.png`)
+            const spriteData = gulp.src(
+                    `./dev/${staticFolderName}/${imagesFolderName}/rastered-svg-images/*.png`
+                )
                 .pipe(plumber({
                     errorHandler(error) {
                         notifier.error(errorText, error);
                     }
                 }))
                 .pipe(skipTaskWithEmptyPipe('css:make-fallback-for-svg', actionsOnTaskSkipping))
-                .pipe(tars.require('gulp.spritesmith')(Object.assign({}, {
-                    imgName: `svg-fallback-sprite${tars.options.build.hash}.png`,
-                    cssName: `svg-fallback-sprite.${preprocExtension}`,
-                    algorithm: 'binary-tree',
-                    algorithmOpts: {
-                        sort: false
-                    },
-                    padding: 4,
-                    cssTemplate: `${cssTemplatePath}/${preprocName}.svg-fallback-sprite.mustache`
-                }, tars.pluginsConfig['gulp.spritesmith']['svg-fallback'])));
+                .pipe(
+                    tars.require('gulp.spritesmith')(
+                        Object.assign(
+                            {},
+                            {
+                                imgName: `svg-fallback-sprite${tars.options.build.hash}.png`,
+                                cssName: `svg-fallback-sprite.${preprocExtension}`,
+                                algorithm: 'binary-tree',
+                                algorithmOpts: {
+                                    sort: false
+                                },
+                                padding: 4,
+                                cssTemplate: `${cssTemplatePath}/${preprocName}.svg-fallback-sprite.mustache`
+                            },
+                            tars.pluginsConfig['gulp.spritesmith']['svg-fallback']
+                        )
+                    )
+                );
 
-            spriteData
-                .img
+            spriteData.img
                 .pipe(gulp.dest(`./dev/${staticFolderName}/${imagesFolderName}/rastered-svg-sprite/`))
                 .pipe(notifier.success('Sprite-img for svg is ready!'));
 
-            return spriteData
-                .css
-                .pipe(gulp.dest(`./markup/${staticFolderName}/${preprocName}/sprites-${preprocName}/`))
-                .pipe(notifier.success(`${stringHelper.capitalizeFirstLetter(preprocName)} for svg-sprite is ready`));
+            return spriteData.css
+                    .pipe(gulp.dest(`./markup/${staticFolderName}/${preprocName}/sprites-${preprocName}/`))
+                    .pipe(
+                        notifier.success(`${stringHelper.capitalizeFirstLetter(preprocName)} for svg-sprite is ready`)
+                    );
 
         }
 

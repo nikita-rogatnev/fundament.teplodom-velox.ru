@@ -15,22 +15,18 @@ let generateSourceMaps = false;
 const staticFolderName = tars.config.fs.staticFolderName;
 const destFolder = `./dev/${staticFolderName}/js`;
 const compressJs = tars.flags.release || tars.flags.min;
-const sourceMapsDest = tars.config.sourcemaps.js.inline
-    ? ''
-    : '.';
-const jsPaths = []
-    .concat
-    .apply([], [
-        `!./markup/${tars.config.fs.componentsFolderName}/**/data/data.js`,
-        '!./markup/**/_*.js',
-        `./markup/${staticFolderName}/js/framework/**/*.js`,
-        `./markup/${staticFolderName}/js/libraries/**/*.js`,
-        `./markup/${staticFolderName}/js/plugins/**/*.js`,
-        tars.config.js.jsPathsToConcatBeforeModulesJs,
-        `./markup/${tars.config.fs.componentsFolderName}/**/*.js`,
-        tars.config.js.jsPathsToConcatAfterModulesJs,
-        `!./markup/${staticFolderName}/js/separate-js/**/*.js`
-    ]);
+const sourceMapsDest = tars.config.sourcemaps.js.inline ? '' : '.';
+const jsPaths = [].concat.apply([], [
+    `!./markup/${tars.config.fs.componentsFolderName}/**/data/data.js`,
+    '!./markup/**/_*.js',
+    `./markup/${staticFolderName}/js/framework/**/*.js`,
+    `./markup/${staticFolderName}/js/libraries/**/*.js`,
+    `./markup/${staticFolderName}/js/plugins/**/*.js`,
+    tars.config.js.jsPathsToConcatBeforeModulesJs,
+    `./markup/${tars.config.fs.componentsFolderName}/**/*.js`,
+    tars.config.js.jsPathsToConcatAfterModulesJs,
+    `!./markup/${staticFolderName}/js/separate-js/**/*.js`
+]);
 
 /**
  * Stream of base processing with JavaScript.
@@ -44,9 +40,15 @@ const jsPaths = []
  *  - write main file at fs.
  */
 function base() {
-    return streamCombiner(gulpif(tars.config.js.useBabel, tars.require('gulp-babel')({
-        babelrc: path.resolve(cwd + '/.babelrc')
-    })), concat({cwd: cwd, path: 'main.js'}), rename({suffix: tars.options.build.hash}), gulpif(generateSourceMaps, sourcemaps.write(sourceMapsDest)), gulp.dest(destFolder));
+    return streamCombiner(
+        gulpif(tars.config.js.useBabel, tars.require('gulp-babel')({
+            babelrc: path.resolve(cwd + '/.babelrc')
+        })),
+        concat({cwd: cwd, path: 'main.js'}),
+        rename({ suffix: tars.options.build.hash }),
+        gulpif(generateSourceMaps, sourcemaps.write(sourceMapsDest)),
+        gulp.dest(destFolder)
+    );
 }
 
 /**
@@ -61,13 +63,14 @@ function base() {
  */
 function compress() {
     if (compressJs) {
-        return streamCombiner(tars.require('gulp-uglify')(tars.pluginsConfig['gulp-uglify']), rename({suffix: '.min'}), gulp.dest(destFolder));
+        return streamCombiner(
+            tars.require('gulp-uglify')(tars.pluginsConfig['gulp-uglify']),
+            rename({ suffix: '.min' }),
+            gulp.dest(destFolder)
+        );
     }
 
-    return tars
-        .packages
-        .gutil
-        .noop();
+    return tars.packages.gutil.noop();
 }
 
 module.exports = () => {
@@ -87,8 +90,7 @@ module.exports = () => {
     return gulp.task('js:concat-processing', () => {
         generateSourceMaps = tars.config.sourcemaps.js.active && tars.options.watch.isActive;
 
-        return gulp
-            .src(jsPaths, {base: cwd})
+        return gulp.src(jsPaths, { base: cwd })
             .pipe(plumber({
                 errorHandler(error) {
                     notifier.error('An error occurred while processing js-files.', error);
@@ -98,6 +100,6 @@ module.exports = () => {
             .pipe(base())
             .pipe(compress())
             .pipe(notifier.success('JavaScript has been processed'))
-            .pipe(browserSync.reload({stream: true}));
+            .pipe(browserSync.reload({ stream: true }));
     });
 };

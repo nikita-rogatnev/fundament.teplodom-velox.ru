@@ -15,7 +15,8 @@ const path = require('path');
  * @return {Boolean}            Is file task or watcher
  */
 function isValidFile(pathToFile, file) {
-    return !pathToFile.match(/example-|[\/\\]helpers[\/\\]/i) && !file.match(/^_/) && pathToFile.match(/js$/i);
+    return !pathToFile.match(/example-|[\/\\]helpers[\/\\]/i)
+            && !file.match(/^_/) && pathToFile.match(/js$/i);
 }
 
 /**
@@ -35,9 +36,7 @@ function getFilesFromDir(dir) {
             results = Object.assign(results, getFilesFromDir(fullPathToFile));
         } else {
             if (isValidFile(fullPathToFile, file)) {
-                results[path
-                        .parse(dir)
-                        .name + '/' + file] = fullPathToFile;
+                results[path.parse(dir).name + '/' + file] = fullPathToFile;
             }
         }
     });
@@ -54,9 +53,7 @@ function getFilesFromDir(dir) {
 function getReadyUniqueItemsArray(systemItems, usersItems) {
     const uniqueItems = Object.assign(systemItems, usersItems);
 
-    return Object
-        .keys(uniqueItems)
-        .map(key => uniqueItems[key]);
+    return Object.keys(uniqueItems).map(key => uniqueItems[key]);
 }
 
 module.exports = {
