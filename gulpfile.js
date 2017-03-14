@@ -9,7 +9,9 @@ const gulp = tars.packages.gulp;
 // Require system and user's tasks
 // You can add your own tasks.
 // All your tasks have to be in tars/user-tasks folder
-tars.helpers.tarsFsHelper
+tars
+    .helpers
+    .tarsFsHelper
     .getTasks()
     .forEach(file => require(file)());
 

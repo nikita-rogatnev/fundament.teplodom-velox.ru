@@ -5,7 +5,9 @@
  * @param  {Object} gutil Utils for gulp
  */
 module.exports = gutil => {
-    const currentCommand = process.argv.slice(2)[0];
+    const currentCommand = process
+        .argv
+        .slice(2)[0];
     const silentCommands = ['init', 're-init', 'update-deps'];
     const usedFlagsArray = Object.keys(tars.flags);
 

@@ -16,7 +16,7 @@ module.exports = function setUlimit() {
 
     if (posix) {
         try {
-            posix.setrlimit('nofile', { soft: limit });
+            posix.setrlimit('nofile', {soft: limit});
             return true;
         } catch (ex) {
             console.log('Error while ulimit setting');

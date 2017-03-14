@@ -9,15 +9,14 @@ const notifier = tars.helpers.notifier;
  */
 module.exports = () => {
     return gulp.task('main:create-build', () => {
-        return gulp.src(['./dev/**/*.*', '!./dev/temp/**'], { base: './dev/' })
-            .pipe(plumber({
-                errorHandler(error) {
-                    notifier.error('An error occurred while running create-build task.', error);
-                }
-            }))
+        return gulp.src([
+            './dev/**/*.*', '!./dev/temp/**'
+        ], {base: './dev/'}).pipe(plumber({
+            errorHandler(error) {
+                notifier.error('An error occurred while running create-build task.', error);
+            }
+        }))
             .pipe(gulp.dest(tars.options.build.path))
-            .pipe(
-                notifier.success('Pre-build task is finished')
-            );
+            .pipe(notifier.success('Pre-build task is finished'));
     });
 };

@@ -20,22 +20,19 @@ module.exports = () => {
             jsPathToWatch = jsPathToWatch.concat(tars.config.js.jsPathsToConcatAfterModulesJs);
         }
 
-        jsPathToWatch.push(
-            `${jsFolderPath}/framework/**/*.js`,
-            `${jsFolderPath}/libraries/**/*.js`,
-            `${jsFolderPath}/plugins/**/*.js`,
-            `markup/${tars.config.fs.componentsFolderName}/**/*.js`
-        );
+        jsPathToWatch.push(`${jsFolderPath}/framework/**/*.js`, `${jsFolderPath}/libraries/**/*.js`, `${jsFolderPath}/plugins/**/*.js`, `markup/${tars.config.fs.componentsFolderName}/**/*.js`);
 
-        return tars.packages.chokidar.watch(
-            jsPathToWatch,
-            Object.assign(tars.options.watch, {
-                ignored: `markup/${tars.config.fs.componentsFolderName}/**/data/data.js`
-            })
-        ).on('all', (event, watchedPath) => {
-            watcherLog(event, watchedPath);
-            tars.packages.gulp.start('js:processing');
-        });
+        return tars
+            .packages
+            .chokidar
+            .watch(jsPathToWatch, Object.assign(tars.options.watch, {ignored: `markup/${tars.config.fs.componentsFolderName}/**/data/data.js`}))
+            .on('all', (event, watchedPath) => {
+                watcherLog(event, watchedPath);
+                tars
+                    .packages
+                    .gulp
+                    .start('js:processing');
+            });
     }
 
     return false;

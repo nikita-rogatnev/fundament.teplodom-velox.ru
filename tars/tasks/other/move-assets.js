@@ -17,7 +17,8 @@ const otherAssets = `./dev/${tars.config.fs.staticFolderName}/${tars.config.fs.c
  */
 module.exports = () => {
     return gulp.task('other:move-assets', () => {
-        return gulp.src(`./markup/${tars.config.fs.componentsFolderName}/**/assets/**/*.*`)
+        return gulp
+            .src(`./markup/${tars.config.fs.componentsFolderName}/**/assets/**/*.*`)
             .pipe(plumber({
                 errorHandler(error) {
                     notifier.error('An error occurred while moving assets.', error);
@@ -25,18 +26,14 @@ module.exports = () => {
             }))
             .pipe(cache('move-assets'))
             .pipe(rename(filepath => {
-                let splittedPath = filepath.dirname.split(path.sep);
+                let splittedPath = filepath
+                    .dirname
+                    .split(path.sep);
                 splittedPath.pop();
                 filepath.dirname = splittedPath.join(path.sep);
             }))
-            .pipe(
-                gulpif(
-                    /\.(svg|png|jpg|jpeg|jpe|gif|tiff|bmp)$/i,
-                    gulp.dest(imgAssets),
-                    gulp.dest(otherAssets)
-                )
-            )
-            .pipe(browserSync.reload({ stream: true }))
+            .pipe(gulpif(/\.(svg|png|jpg|jpeg|jpe|gif|tiff|bmp)$/i, gulp.dest(imgAssets), gulp.dest(otherAssets)))
+            .pipe(browserSync.reload({stream: true}))
             .pipe(notifier.success('Assets\'ve been moved'));
     });
 };

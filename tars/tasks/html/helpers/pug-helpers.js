@@ -53,7 +53,4 @@ try {
     userHelpers = {};
 }
 
-module.exports = Object.assign(
-    builtInPugHelpers,
-    userHelpers
-);
+module.exports = Object.assign(builtInPugHelpers, userHelpers);

@@ -6,7 +6,9 @@ const notifyConfig = tars.config.notifyConfig;
 const path = require('path');
 
 function cutUselessLog(error) {
-    return error.message.replace(/(at\sParser\.pp\.raise[\s\S]*)/, '');
+    return error
+        .message
+        .replace(/(at\sParser\.pp\.raise[\s\S]*)/, '');
 }
 
 /**
@@ -48,7 +50,10 @@ module.exports = {
             console.log(gutil.colors.red('_______________\n'));
         }
 
-        return tars.packages.gutil.noop();
+        return tars
+            .packages
+            .gutil
+            .noop();
     },
 
     /**
@@ -66,7 +71,10 @@ module.exports = {
                 sound: notifyConfig.sounds.onSuccess,
                 title: notifyConfig.title,
                 templateOptions: {
-                    date: tars.helpers.dateFormatter.getTimeOfModify()
+                    date: tars
+                        .helpers
+                        .dateFormatter
+                        .getTimeOfModify()
                 },
                 icon: path.resolve(tars.root + '/icons/tars.png')
             };
@@ -78,17 +86,15 @@ module.exports = {
                 return notify(defaultConfig).write(resultMessage);
             }
 
-            return notify(
-                Object.assign(
-                    defaultConfig,
-                    {
-                        onLast: params.onLast || true,
-                        message: resultMessage
-                    }
-                )
-            );
+            return notify(Object.assign(defaultConfig, {
+                onLast: params.onLast || true,
+                message: resultMessage
+            }));
         }
 
-        return tars.packages.gutil.noop();
+        return tars
+            .packages
+            .gutil
+            .noop();
     }
 };

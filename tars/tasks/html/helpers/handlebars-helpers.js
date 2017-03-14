@@ -18,10 +18,9 @@ const builtInHandlebarsHelpers = {
         const count = n - 1;
         let content = '';
 
-
         for (let index = 0; index <= count; index++) {
             options.data.index = index;
-            content += options.fn(this, { data: options.data });
+            content += options.fn(this, {data: options.data});
         }
         return new Handlebars.SafeString(content);
     },
@@ -40,7 +39,7 @@ const builtInHandlebarsHelpers = {
         if (operation && typeof operation === 'string') {
             switch (operation) {
 
-                // Not strictly equal
+                    // Not strictly equal
                 case '==':
                     if (a == b) {
                         return options.fn(this);
@@ -49,7 +48,7 @@ const builtInHandlebarsHelpers = {
                     }
                     break;
 
-                // Strictly equal
+                    // Strictly equal
                 case '===':
                     if (a === b) {
                         return options.fn(this);
@@ -58,7 +57,7 @@ const builtInHandlebarsHelpers = {
                     }
                     break;
 
-                // a > b checking
+                    // a > b checking
                 case '>':
                     if (a > b) {
                         return options.fn(this);
@@ -67,7 +66,7 @@ const builtInHandlebarsHelpers = {
                     }
                     break;
 
-                // a >= b checking
+                    // a >= b checking
                 case '>=':
                     if (a >= b) {
                         return options.fn(this);
@@ -76,7 +75,7 @@ const builtInHandlebarsHelpers = {
                     }
                     break;
 
-                // a < b checking
+                    // a < b checking
                 case '<':
                     if (a < b) {
                         return options.fn(this);
@@ -85,7 +84,7 @@ const builtInHandlebarsHelpers = {
                     }
                     break;
 
-                // a <= b checking
+                    // a <= b checking
                 case '<=':
                     if (a <= b) {
                         return options.fn(this);
@@ -94,7 +93,7 @@ const builtInHandlebarsHelpers = {
                     }
                     break;
 
-                // a != b checking
+                    // a != b checking
                 case '!=':
                     if (a != b) {
                         return options.fn(this);
@@ -103,7 +102,7 @@ const builtInHandlebarsHelpers = {
                     }
                     break;
 
-                // a !== b checking
+                    // a !== b checking
                 case '!==':
                     if (a !== b) {
                         return options.fn(this);
@@ -112,10 +111,9 @@ const builtInHandlebarsHelpers = {
                     }
                     break;
 
-                // Action, if operation is unknown
+                    // Action, if operation is unknown
                 default:
-                    throw new Error(
-                        'Operation is unknown!\n"is" helper supports only:\n' +
+                    throw new Error('Operation is unknown!\n"is" helper supports only:\n' +
                         '"==",\n' +
                         '"===",\n' +
                         '">",\n' +
@@ -123,8 +121,7 @@ const builtInHandlebarsHelpers = {
                         '"<",\n' +
                         '"<=",\n' +
                         '"!=",\n' +
-                        '"!==",\n'
-                    );
+                        '"!==",\n');
             }
         } else {
             throw new Error('Operation has to be received to "is" helper and has to be a string');
@@ -162,7 +159,9 @@ const builtInHandlebarsHelpers = {
     capitalizeFirst(str) {
         str = Utils.castToString(str);
 
-        return str.charAt(0).toUpperCase() + str.slice(1);
+        return str
+            .charAt(0)
+            .toUpperCase() + str.slice(1);
     },
 
     /**
@@ -179,7 +178,9 @@ const builtInHandlebarsHelpers = {
             _data = Handlebars.createFrame(options._data);
         }
 
-        const content = options.fn(this, {data: _data}).replace(/>(\s+)</g, '><');
+        const content = options
+            .fn(this, {data: _data})
+            .replace(/>(\s+)</g, '><');
 
         return new Handlebars.SafeString(content);
     },
@@ -268,7 +269,9 @@ const builtInHandlebarsHelpers = {
             throw 'Key must be of type \'string\'';
         }
 
-        language = (typeof options.hash.language === 'string' ? options.hash.language : this.language);
+        language = (typeof options.hash.language === 'string'
+            ? options.hash.language
+            : this.language);
 
         if (typeof language === 'undefined') {
             throw 'The \'language\' parameter is not defined';
@@ -286,7 +289,4 @@ const builtInHandlebarsHelpers = {
     }
 };
 
-module.exports = Object.assign(
-    builtInHandlebarsHelpers,
-    require(tars.root + '/user-tasks/html/helpers/handlebars-helpers')
-);
+module.exports = Object.assign(builtInHandlebarsHelpers, require(tars.root + '/user-tasks/html/helpers/handlebars-helpers'));

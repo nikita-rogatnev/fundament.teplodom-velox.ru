@@ -11,7 +11,8 @@ module.exports = function actionsOnSpriteTaskSkipping(params) {
     const doneCallback = params.done;
     const errorText = params.errorText;
 
-    Promise.resolve()
+    Promise
+        .resolve()
         .then(() => {
             return new Promise((resolve, reject) => {
                 fs.readFile(fileWithMixinsPath, 'utf8', (error, data) => {

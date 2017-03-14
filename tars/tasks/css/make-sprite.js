@@ -32,49 +32,32 @@ module.exports = () => {
         });
 
         function actionsOnTaskSkipping() {
-            return actionsOnSpriteTaskSkipping({
-                blankFilePath: `./markup/${staticFolderName}/${preprocName}/sprites-${preprocName}/sprite_96.${preprocExtension}`,
-                fileWithMixinsPath: `${tars.root}/tasks/css/helpers/sprite-mixins/${preprocName}-raster-sprite-mixins.${preprocExtension}`,
-                done,
-                errorText
-            });
+            return actionsOnSpriteTaskSkipping({blankFilePath: `./markup/${staticFolderName}/${preprocName}/sprites-${preprocName}/sprite_96.${preprocExtension}`, fileWithMixinsPath: `${tars.root}/tasks/css/helpers/sprite-mixins/${preprocName}-raster-sprite-mixins.${preprocExtension}`, done, errorText});
         }
 
         /* eslint-disable no-loop-func */
 
         for (let i = 0; i < dpiLength; i++) {
-            spriteData.push(
-                gulp.src(`./markup/${staticFolderName}/${imagesFolderName}/sprite/${usedDpiArray[i]}dpi/*.png`)
-                .pipe(plumber({
-                    errorHandler(error) {
-                        notifier.error(errorText, error);
-                    }
-                }))
-                .pipe(
-                    tars.require('gulp.spritesmith')(
-                        Object.assign(
-                            {},
-                            {
-                                imgName: `sprite${tars.options.build.hash}.png`,
-                                cssName: `sprite_${usedDpiArray[i]}.${preprocExtension}`,
-                                algorithm: 'binary-tree',
-                                algorithmOpts: {
-                                    sort: false
-                                },
-                                cssOpts: dpiConfig,
-                                padding: (i + 1) * 4,
-                                cssTemplate: `${cssTemplatePath}/${preprocName}.sprite.mustache`
-                            },
-                            spritesmithConfig,
-                            {
-                                padding: (i + 1) * spritesmithConfig.padding
-                            }
-                        )
-                    )
-                )
-            );
+            spriteData.push(gulp.src(`./markup/${staticFolderName}/${imagesFolderName}/sprite/${usedDpiArray[i]}dpi/*.png`).pipe(plumber({
+                errorHandler(error) {
+                    notifier.error(errorText, error);
+                }
+            })).pipe(tars.require('gulp.spritesmith')(Object.assign({}, {
+                imgName: `sprite${tars.options.build.hash}.png`,
+                cssName: `sprite_${usedDpiArray[i]}.${preprocExtension}`,
+                algorithm: 'binary-tree',
+                algorithmOpts: {
+                    sort: false
+                },
+                cssOpts: dpiConfig,
+                padding: (i + 1) * 4,
+                cssTemplate: `${cssTemplatePath}/${preprocName}.sprite.mustache`
+            }, spritesmithConfig, {
+                padding: (i + 1) * spritesmithConfig.padding
+            }))));
 
-            spriteData[i].img
+            spriteData[i]
+                .img
                 .pipe(gulp.dest(`./dev/${staticFolderName}/${imagesFolderName}/png-sprite/${usedDpiArray[i]}dpi/`))
                 .pipe(notifier.success(`Sprite img with dpi = ${usedDpiArray[i]} is ready`));
         }
@@ -82,13 +65,10 @@ module.exports = () => {
         /* eslint-enable no-loop-func */
 
         // Returns css for dpi 96
-        return spriteData[0].css
-                .pipe(skipTaskWithEmptyPipe('css:make-sprite', actionsOnTaskSkipping))
-                .pipe(gulp.dest(`./markup/${staticFolderName}/${preprocName}/sprites-${preprocName}/`))
-                .pipe(
-                    notifier.success(
-                        stringHelper.capitalizeFirstLetter(preprocName) + ' for sprites is ready'
-                    )
-                );
+        return spriteData[0]
+            .css
+            .pipe(skipTaskWithEmptyPipe('css:make-sprite', actionsOnTaskSkipping))
+            .pipe(gulp.dest(`./markup/${staticFolderName}/${preprocName}/sprites-${preprocName}/`))
+            .pipe(notifier.success(stringHelper.capitalizeFirstLetter(preprocName) + ' for sprites is ready'));
     });
 };

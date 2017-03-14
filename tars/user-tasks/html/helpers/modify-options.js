@@ -3,9 +3,7 @@
 module.exports = {
 
     // All options are taken from https://github.com/kangax/html-minifier with default values
-    minifyOpts: {
-
-    },
+    minifyOpts: {},
 
     /* eslint-disable camelcase */
 
@@ -31,9 +29,7 @@ module.exports = {
     // @param {Number}  max_preserve_newlines   maximum number of line breaks to be preserved in one chunk
     //                                          Default: unlimited
     // @param {Boolean} indent_handlebars       format and indent {{#foo}} and {{/foo}}. Default: false
-    prettifyOpts: {
-
-    }
+    prettifyOpts: {}
 
     /* eslint-enable camelcase */
 };

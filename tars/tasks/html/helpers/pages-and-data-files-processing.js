@@ -25,12 +25,18 @@ module.exports = function pagesAndDataFilesProcessing() {
     return through2.obj(function (file, enc, callback) {
         const parsedFileRelativePath = path.parse(file.relative);
         const fileName = parsedFileRelativePath.base;
-        const pathParts = parsedFileRelativePath.dir.split(path.sep);
-        let fileContent = file.contents.toString();
+        const pathParts = parsedFileRelativePath
+            .dir
+            .split(path.sep);
+        let fileContent = file
+            .contents
+            .toString();
         let namePrefix = '';
 
         if (pathParts.length > 2) {
-            namePrefix = pathParts.slice(0, -2).join('_') + '_';
+            namePrefix = pathParts
+                .slice(0, -2)
+                .join('_') + '_';
         }
 
         switch (fileName) {
@@ -77,12 +83,7 @@ module.exports = function pagesAndDataFilesProcessing() {
         });
         pagesListFileContent += ']';
 
-        const pagesListFile = new File({
-            base: './pages/',
-            cwd: __dirname,
-            path: './pages/all',
-            contents: new Buffer(pagesListFileContent)
-        });
+        const pagesListFile = new File({base: './pages/', cwd: __dirname, path: './pages/all', contents: new Buffer(pagesListFileContent)});
 
         this.push(pagesListFile); // eslint-disable-line no-invalid-this
 

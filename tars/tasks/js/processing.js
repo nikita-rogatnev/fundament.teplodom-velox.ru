@@ -1,7 +1,10 @@
 'use strict';
 
 const gulp = tars.packages.gulp;
-const runSequence = tars.packages.runSequence.use(gulp);
+const runSequence = tars
+    .packages
+    .runSequence
+    .use(gulp);
 
 module.exports = () => {
     return gulp.task('js:processing', ['js:check'], done => {
@@ -12,18 +15,12 @@ module.exports = () => {
                 if (tars.config.js.webpack.useHMR && tars.useLiveReload) {
                     done();
                 } else {
-                    runSequence(
-                        `js:${tars.config.js.bundler}-processing`,
-                        done
-                    );
+                    runSequence(`js:${tars.config.js.bundler}-processing`, done);
                 }
                 break;
             case 'concat':
             default:
-                runSequence(
-                    'js:concat-processing',
-                    done
-                );
+                runSequence('js:concat-processing', done);
                 break;
         }
     });
